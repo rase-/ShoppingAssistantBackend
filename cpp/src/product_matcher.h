@@ -18,7 +18,7 @@ class ProductMatcher
     
     void loadProductInfo();
   public:
-    ProductMatcher(cv::Mat& freak_descriptors, cv::Mat& surf_desciptors, std::string& imagebase_path);
+    ProductMatcher(cv::Mat& freak_descriptors, cv::Mat& surf_desciptors, std::string& image_path);
     double match();
 };
 
