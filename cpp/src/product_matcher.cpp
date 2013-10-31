@@ -41,7 +41,5 @@ double ProductMatcher::match(MatchType match_type) {
 
     // The ratio of good matches to all matches is the confidence estimate
     // we've got
-    double confidence = good_matches.size() / matches.size(); 
-
-    return confidence;
+    return good_matches.size() / matches.size();
 }
