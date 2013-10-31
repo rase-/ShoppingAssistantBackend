@@ -8,18 +8,17 @@
 #include <opencv2/nonfree/features2d.hpp>
 #include <string>
 
+enum MatchType { FREAK_MATCH, SURF_MATCH };
+
 // This could actually just be moved to the server man...
-class ProductMatcher
-{
+class ProductMatcher {
   private:
     cv::Mat freak_descriptors;
     cv::Mat surf_descriptors;
     std::string imagebase_path;
-    
-    void loadProductInfo();
   public:
     ProductMatcher(cv::Mat& freak_descriptors, cv::Mat& surf_desciptors, std::string& image_path);
-    double match();
+    double match(MatchType match_type);
 };
 
 #endif

@@ -2,14 +2,14 @@
 
 using namespace cv;
 
-ProductMatcher::ProductMatcher(cv::Mat& freak_descriptors, cv::Mat& surf_descriptors, std::string& image_path) {
+ProductMatcher::ProductMatcher(Mat& freak_descriptors, Mat& surf_descriptors, std::string& image_path) {
     this->freak_descriptors = freak_descriptors;
     this->surf_descriptors = surf_descriptors;
     this->imagebase_path = image_path;
 }
 
 // Actually rethink this one
-double ProductMatcher::match() {
+double ProductMatcher::match(MatchType match_type) {
     Mat reference = imread(imagebase_path);
     SurfFeatureDetector detector (400);
     SurfDescriptorExtractor extractor;
@@ -21,9 +21,10 @@ double ProductMatcher::match() {
     extractor.compute(reference, keypoints, ref_surf_descriptors);
     freak.compute(reference, keypoints, ref_freak_descriptors);
 
-    cv::FlannBasedMatcher matcher;
+    FlannBasedMatcher matcher;
     std::vector<cv::DMatch> matches;
-    matcher.match(freak_descriptors, ref_freak_descriptors, matches);
+    if (match_type == FREAK_MATCH) matcher.match(freak_descriptors, ref_freak_descriptors, matches);
+    else matcher.match(surf_descriptors, ref_surf_descriptors, matches);
 
     double max_dist = 0, min_dist = 100;
     for (int i = 0; i < freak_descriptors.rows; i++) {
@@ -43,8 +44,4 @@ double ProductMatcher::match() {
     double confidence = good_matches.size() / matches.size(); 
 
     return confidence;
-}
-
-void ProductMatcher::loadProductInfo() {
-    // Load from assets folder or something
 }

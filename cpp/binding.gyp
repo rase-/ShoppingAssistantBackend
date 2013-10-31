@@ -2,7 +2,7 @@
   "targets": [
     {
       "target_name": "cv",
-      "sources": [ "main.cpp", "src/product_matcher.cpp" ],
+      "sources": [ "main.cpp", "src/product_matcher.cpp", "src/product_finder.cpp" ],
       "include_dirs": [ "/usr/local/include/" ],  
       "link_settings": {
                         'libraries':    ['-lopencv_core -lopencv_features2d -lopencv_contrib'],
