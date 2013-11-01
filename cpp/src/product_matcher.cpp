@@ -22,7 +22,7 @@ double ProductMatcher::match(MatchType match_type) {
     freak.compute(reference, keypoints, ref_freak_descriptors);
 
     FlannBasedMatcher matcher;
-    std::vector<cv::DMatch> matches;
+    std::vector<DMatch> matches;
     if (match_type == FREAK_MATCH) matcher.match(freak_descriptors, ref_freak_descriptors, matches);
     else matcher.match(surf_descriptors, ref_surf_descriptors, matches);
 
