@@ -19,7 +19,7 @@ std::vector<std::string> ProductFinder::findFiles(std::string path) {
 
 void ProductFinder::findTopMatches(int k) {
     std::vector<std::string> file_names = findFiles(image_folder_path);
-    for (unsigned int i = 0; i < file_names.size(); i++) {
+    for (size_t i = 0; i < file_names.size(); i++) {
         ProductMatcher p_matcher(freak_descriptors, surf_descriptors, file_names[i]);
         double confidence = p_matcher.match(FREAK_MATCH);
     }
