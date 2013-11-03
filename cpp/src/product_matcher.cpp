@@ -8,6 +8,8 @@ ProductMatcher::ProductMatcher(Mat& freak_descriptors, Mat& surf_descriptors, st
     this->imagebase_path = image_path;
 }
 
+// At least at first the scanning part is done on the phone, so let's just
+// match with edit distance or so
 double ProductMatcher::matchBarcodes() {
     return 0.0;
 }
@@ -47,6 +49,7 @@ double ProductMatcher::matchLogos(MatchType match_type) {
     return good_matches.size() / matches.size();
 }
 
+// Here we can do euclidean distance of BoW representation or so
 double ProductMatcher::matchBagOfWords() {
     return 0.0;
 }
