@@ -8,8 +8,11 @@ ProductMatcher::ProductMatcher(Mat& freak_descriptors, Mat& surf_descriptors, st
     this->imagebase_path = image_path;
 }
 
-// Actually rethink this one
-double ProductMatcher::match(MatchType match_type) {
+double ProductMatcher::matchBarcodes() {
+    return 0.0;
+}
+
+double ProductMatcher::matchLogos(MatchType match_type) {
     Mat reference = imread(imagebase_path);
     SurfFeatureDetector detector (400);
     SurfDescriptorExtractor extractor;
@@ -42,4 +45,20 @@ double ProductMatcher::match(MatchType match_type) {
     // The ratio of good matches to all matches is the confidence estimate
     // we've got
     return good_matches.size() / matches.size();
+}
+
+double ProductMatcher::matchBagOfWords() {
+    return 0.0;
+}
+
+// Actually rethink this one
+double ProductMatcher::match(MatchType match_type) {
+    switch(match_type) {
+        case BARCODE_MATCH:
+            return matchBarcodes();
+        case BAG_OF_WORDS_MATCH:
+            return matchBagOfWords();
+        default:
+            return matchLogos(match_type);
+    }
 }
