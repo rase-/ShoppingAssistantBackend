@@ -2,7 +2,7 @@
   "targets": [
     {
       "target_name": "cv",
-      "sources": [ "main.cpp", "src/product_finder.cpp", "src/product_matcher.cpp", "src/barcode/*.cpp" ],
+      "sources": [ "main.cpp", "src/product_finder.cpp", "src/product_matcher.cpp", "src/barcode/ImageReaderSource.cpp", "src/barcode/jpgd.cpp", "src/barcode/lodepng.cpp" , "src/barcode/barcode_scanner.cpp"],
       "cflags!": [ "-fno-exceptions" ],
       "cflags_cc!": [ "-fno-exceptions" ],
       "conditions": [[ 'OS=="mac"', { "xcode_settings": { "GCC_ENABLE_CPP_EXCEPTIONS": "YES" } } ]],

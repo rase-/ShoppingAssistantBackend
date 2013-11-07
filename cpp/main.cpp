@@ -31,10 +31,12 @@ Handle<Value> ScanBarcode(const Arguments& args)
 
     String::Utf8Value string_arg(args[0]->ToString());
     std::string filename = std::string(*string_arg);
-
+    std::cout << "Scanning file " << filename << std::endl;
+    std::string code = scan(filename);
+    std::cout << "Found it" << std::endl;
     return scope.Close
     (
-        String::New(scan(filename).c_str())
+        String::New(code.c_str())
     );
 }
 
@@ -42,7 +44,7 @@ void RegisterModule(Handle<Object> target)
 {
     // target is the module object you see when require()ing the .node file.
     target->Set(String::NewSymbol("buildInformation"), FunctionTemplate::New(buildInformation)->GetFunction());
-    target->Set(String::NewSymbol("scanBarcode"), FunctionTemplate::New(buildInformation)->GetFunction());
+    target->Set(String::NewSymbol("scanBarcode"), FunctionTemplate::New(ScanBarcode)->GetFunction());
 }
  
 NODE_MODULE(cv, RegisterModule);
