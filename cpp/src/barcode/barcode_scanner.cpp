@@ -148,7 +148,7 @@ int read_image(Ref<LuminanceSource> source, bool hybrid, string expected, vector
            
             string str = "";
             Ref<String> stringRef = results[i]->getText();
-            for (int j = 0; j < stringRef->length() - 1; j++) {
+            for (int j = 0; j < stringRef->length(); j++) {
                 char c = stringRef->charAt(j);
                 str.push_back(c);
             }
