@@ -130,6 +130,7 @@ int read_image(Ref<LuminanceSource> source, bool hybrid, string expected, vector
             cout << (hybrid ? "Hybrid" : "Global")
                 << " binarizer succeeded: " << endl;
         }
+        cout << "Fetching decoding results, found " << results.size() << endl;
         for (size_t i = 0; i < results.size(); i++) {
             if (more) {
                 cout << "  Format: "
@@ -144,8 +145,17 @@ int read_image(Ref<LuminanceSource> source, bool hybrid, string expected, vector
             if (verbose) {
                 cout << "    ";
             }
-            cout << results[i]->getText()->getText() << endl;
-            codes.push_back(results[i]->getText()->getText());
+           
+            string str = "";
+            Ref<String> stringRef = results[i]->getText();
+            for (int j = 0; j < stringRef->length() - 1; j++) {
+                char c = stringRef->charAt(j);
+                cout << "Char: " << c;
+                str.push_back(c);
+            }
+            cout << endl;
+            cout << str << endl;
+            codes.push_back(str);
         }
     }
 
