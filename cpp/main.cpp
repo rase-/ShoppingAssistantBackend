@@ -1,7 +1,8 @@
 #include <node.h>
 #include <opencv2/opencv.hpp>
 #include <string>
- 
+#include "src/barcode/barcode_scanner.h"
+
 using namespace v8;
  
 // This function returns a JavaScript number that is either 0 or 1.
@@ -23,11 +24,25 @@ Handle<Value> buildInformation(const Arguments& args)
         String::New(cv::getBuildInformation().c_str())
     );
 }
- 
+
+Handle<Value> ScanBarcode(const Arguments& args)
+{
+    HandleScope scope;
+
+    String::Utf8Value string_arg(args[0]->ToString());
+    std::string filename = std::string(*string_arg);
+
+    return scope.Close
+    (
+        String::New(scan(filename).c_str())
+    );
+}
+
 void RegisterModule(Handle<Object> target)
 {
     // target is the module object you see when require()ing the .node file.
     target->Set(String::NewSymbol("buildInformation"), FunctionTemplate::New(buildInformation)->GetFunction());
+    target->Set(String::NewSymbol("scanBarcode"), FunctionTemplate::New(buildInformation)->GetFunction());
 }
  
 NODE_MODULE(cv, RegisterModule);

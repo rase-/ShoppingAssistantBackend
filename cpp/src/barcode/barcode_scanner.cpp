@@ -38,6 +38,8 @@
 #include <zxing/multi/MultipleBarcodeReader.h>
 #include <zxing/multi/GenericMultipleBarcodeReader.h>
 
+#include "barcode_scanner.h"
+
 using namespace std;
 using namespace zxing;
 using namespace zxing::multi;
@@ -198,10 +200,6 @@ string scan(string filename) {
     //}
     
     return codes[0];
-}
-
-int main() {
-    cout << scan("test.jpg") << endl;
 }
 
 //int main(int argc, char** argv) {
