@@ -150,7 +150,6 @@ int read_image(Ref<LuminanceSource> source, bool hybrid, string expected, vector
             Ref<String> stringRef = results[i]->getText();
             for (int j = 0; j < stringRef->length() - 1; j++) {
                 char c = stringRef->charAt(j);
-                cout << "Char: " << c;
                 str.push_back(c);
             }
             cout << endl;
@@ -214,7 +213,8 @@ std::string scan(std::string filename) {
         cout << "Scanning completed" << endl;
     }
 
-    return codes[0];
+    if (codes.size() > 0) return codes[0];
+    else return "";
 }
 
 //int main(int argc, char** argv) {
