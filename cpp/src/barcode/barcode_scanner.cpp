@@ -194,7 +194,7 @@ string read_expected(string imagefilename) {
     return expected;
 }
 
-std::string scan(std::string filename) {
+std::string ScanBarcode(std::string filename) {
     cout << "Starting scanning" << endl;
     Ref<LuminanceSource> source;
     try {

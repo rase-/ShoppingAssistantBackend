@@ -1,6 +1,7 @@
 #include <tesseract/baseapi.h>
-#include <tesseract/allheaders.h>
+#include <leptonica/allheaders.h>
 #include <string>
+#include "optical_character_recognition.h"
 
 using namespace tesseract;
 

@@ -1,5 +1,5 @@
 #ifndef BARCODESCANNER_H
 #define BARCODESCANNER_H
 #include <string>
-std::string scan(std::string filename);
+std::string ScanBarcode(std::string filename);
 #endif

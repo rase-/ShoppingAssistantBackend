@@ -2,6 +2,7 @@
 #include <opencv2/opencv.hpp>
 #include <string>
 #include "src/barcode/barcode_scanner.h"
+#include "src/ocr/optical_character_recognition.h"
 
 using namespace v8;
  
@@ -25,14 +26,14 @@ Handle<Value> buildInformation(const Arguments& args)
     );
 }
 
-Handle<Value> ScanBarcode(const Arguments& args)
+Handle<Value> ScanForBarcode(const Arguments& args)
 {
     HandleScope scope;
 
     String::Utf8Value string_arg(args[0]->ToString());
     std::string filename = std::string(*string_arg);
-    std::cout << "Scanning file " << filename << std::endl;
-    std::string code = scan(filename);
+    std::cout << "Scanning barcode from file " << filename << std::endl;
+    std::string code = ScanBarcode(filename);
     std::cout << "Found it" << std::endl;
     return scope.Close
     (
@@ -40,11 +41,25 @@ Handle<Value> ScanBarcode(const Arguments& args)
     );
 }
 
+Handle<Value> ScanForText(const Arguments& args) {
+    HandleScope scope;
+    String::Utf8Value string_arg(args[0]->ToString());
+    std::string filename = std::string(*string_arg);
+    std::cout << "Scanning text from file " << filename << std::endl;
+    std::string text = RecognizeText(filename);
+    return scope.Close
+    (
+        String::New(text.c_str())
+    );
+
+}
+
 void RegisterModule(Handle<Object> target)
 {
     // target is the module object you see when require()ing the .node file.
     target->Set(String::NewSymbol("buildInformation"), FunctionTemplate::New(buildInformation)->GetFunction());
-    target->Set(String::NewSymbol("scanBarcode"), FunctionTemplate::New(ScanBarcode)->GetFunction());
+    target->Set(String::NewSymbol("scanBarcode"), FunctionTemplate::New(ScanForBarcode)->GetFunction());
+    target->Set(String::NewSymbol("scanText"), FunctionTemplate::New(ScanForText)->GetFunction());
 }
  
 NODE_MODULE(cv, RegisterModule);

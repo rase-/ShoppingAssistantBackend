@@ -8,8 +8,13 @@ app.use express.bodyParser({ keepExtensions: true })
 app.get "/hello.txt", (req, res) -> res.send "Hello World!"
 app.get "/images", (req, res) -> res.json { files: fs.readdirSync("./images") }
 app.get "/opencvinfo", (req, res) -> res.send cv.buildInformation()
-app.post "/scan", (req, res) ->
+
+app.post "/barcode", (req, res) ->
     res.json { "barcode": cv.scanBarcode(req.files.file.path) }
+
+app.post "/text", (req, res) ->
+    res.json { "text": cv.scanText(req.files.file.path) }
+
 app.post "/process", (req, res) ->
     console.log JSON.stringify(req.files)
     res.send req.files.file
