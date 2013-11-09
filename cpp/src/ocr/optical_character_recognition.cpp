@@ -5,7 +5,7 @@
 
 using namespace tesseract;
 
-std::string RecognizeTex(std::string file_path) {
+std::string RecognizeText(std::string file_path) {
     TessBaseAPI api = TessBaseAPI();
     if (api.Init(NULL, "eng")) {
         return "";
