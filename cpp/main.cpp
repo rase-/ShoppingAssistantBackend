@@ -3,6 +3,7 @@
 #include <string>
 #include "src/barcode/barcode_scanner.h"
 #include "src/ocr/optical_character_recognition.h"
+#include "src/logo/logo_matcher.h"
 
 using namespace v8;
  
@@ -26,7 +27,7 @@ Handle<Value> buildInformation(const Arguments& args) {
 }
 
 Handle<Value> MatchLogos(const Arguments& args) {
-    if (args.Length() < 3) {
+    if (args.Length() < 2) {
         ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
     }
     HandleScope scope;
@@ -37,7 +38,7 @@ Handle<Value> MatchLogos(const Arguments& args) {
     std::string reference_file_path = std::string(*reference_file_v8);
     return scope.Close
     (
-        Number::New(1)
+        Number::New(matchLogosFreak(sent_file_path, reference_file_path))
     );
 }
 

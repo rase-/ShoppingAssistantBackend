@@ -15,6 +15,9 @@ app.post "/barcode", (req, res) ->
 app.post "/text", (req, res) ->
     res.json { "text": imgproc.scanText(req.files.file.path) }
 
+app.post "/logo", (req, res) ->
+    res.json { "score": imgproc.matchLogos(req.files.file.path, req.files.file.path) }
+
 app.post "/process", (req, res) ->
     console.log JSON.stringify(req.files)
     res.send req.files.file
