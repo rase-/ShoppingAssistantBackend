@@ -51,7 +51,6 @@ Handle<Value> ScanForText(const Arguments& args) {
     (
         String::New(text.c_str())
     );
-
 }
 
 void RegisterModule(Handle<Object> target)
