@@ -29,7 +29,9 @@ Handle<Value> MatchLogos(const Arguments& args) {
     if (args.Length() < 3) {
         ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
     }
-    String::Utf8Value sent_fiÃle_v8(args[0]->ToString());
+    HandleScope scope;
+
+    String::Utf8Value sent_file_v8(args[0]->ToString());
     String::Utf8Value reference_file_v8(args[1]->ToString());
     std::string sent_file_path = std::string(*sent_file_v8);
     std::string reference_file_path = std::string(*reference_file_v8);
@@ -70,6 +72,7 @@ void RegisterModule(Handle<Object> target) {
     target->Set(String::NewSymbol("buildInformation"), FunctionTemplate::New(buildInformation)->GetFunction());
     target->Set(String::NewSymbol("scanBarcode"), FunctionTemplate::New(ScanForBarcode)->GetFunction());
     target->Set(String::NewSymbol("scanText"), FunctionTemplate::New(ScanForText)->GetFunction());
+    target->Set(String::NewSymbol("matchLogos"), FunctionTemplate::New(MatchLogos)->GetFunction());
 }
  
 NODE_MODULE(imgproc, RegisterModule);
