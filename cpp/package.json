@@ -1,5 +1,5 @@
 {
-    "name": "cv",
+    "name": "imgproc",
     "version": "1.0.0",
-    "main": "./build/Release/cv"
+    "main": "./build/Release/imgproc"
 }

@@ -62,4 +62,4 @@ void RegisterModule(Handle<Object> target)
     target->Set(String::NewSymbol("scanText"), FunctionTemplate::New(ScanForText)->GetFunction());
 }
  
-NODE_MODULE(cv, RegisterModule);
+NODE_MODULE(imgproc, RegisterModule);
