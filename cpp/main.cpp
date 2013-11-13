@@ -7,8 +7,7 @@
 using namespace v8;
  
 // This function returns a JavaScript number that is either 0 or 1.
-Handle<Value> buildInformation(const Arguments& args)
-{
+Handle<Value> buildInformation(const Arguments& args) {
     // At the top of every function that uses anything about v8, include a
     // definition like this. It ensures that any v8 handles you create in that
     // function are properly cleaned up. If you see memory rising in your
@@ -26,8 +25,21 @@ Handle<Value> buildInformation(const Arguments& args)
     );
 }
 
-Handle<Value> ScanForBarcode(const Arguments& args)
-{
+Handle<Value> MatchLogos(const Arguments& args) {
+    if (args.Length() < 3) {
+        ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+    }
+    String::Utf8Value sent_fiÃle_v8(args[0]->ToString());
+    String::Utf8Value reference_file_v8(args[1]->ToString());
+    std::string sent_file_path = std::string(*sent_file_v8);
+    std::string reference_file_path = std::string(*reference_file_v8);
+    return scope.Close
+    (
+        Number::New(1)
+    );
+}
+
+Handle<Value> ScanForBarcode(const Arguments& args) {
     HandleScope scope;
 
     String::Utf8Value string_arg(args[0]->ToString());
@@ -53,8 +65,7 @@ Handle<Value> ScanForText(const Arguments& args) {
     );
 }
 
-void RegisterModule(Handle<Object> target)
-{
+void RegisterModule(Handle<Object> target) {
     // target is the module object you see when require()ing the .node file.
     target->Set(String::NewSymbol("buildInformation"), FunctionTemplate::New(buildInformation)->GetFunction());
     target->Set(String::NewSymbol("scanBarcode"), FunctionTemplate::New(ScanForBarcode)->GetFunction());
