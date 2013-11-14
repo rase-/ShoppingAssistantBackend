@@ -58,7 +58,7 @@ double matchLogosSurf(std::string sent_file_path, std::string reference_image_pa
     surf.compute(sent, sent_keypoints, sent_descriptors);
     surf.compute(reference, reference_keypoints, reference_descriptors);
 
-    FlannBasedMatcher matcher;
+    BFMatcher matcher;
     std::vector<DMatch> matches;
     matcher.match(sent_descriptors, reference_descriptors, matches);
     
