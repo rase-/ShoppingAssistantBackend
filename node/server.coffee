@@ -12,13 +12,21 @@ app.use express.bodyParser({ keepExtensions: true })
 # Initialize DBs
 couchdb = new (cradle.Connection)().database "products"
 redisdb = redis.createClient() # This function actutally takes the id of the db as argument, 0 by default
+couchdb.exists (err, exists) ->
+    if err
+        console.log "Error: #{err}"
+    else if exists
+        console.log "CouchDB database found"
+    else
+        console.log "CouchDB database not found, creating..."
+        db.create()
 
 # Routes and actions
 ## User actions
-app.get "products/:id", (req, res) ->
+app.get "/products/:id", (req, res) ->
     productId = req.params.id
     couchdb.get productId, (err, data) ->
-        res.json JSON.stringify(data)
+        res.json data
 
 ## Useful checks
 app.get "/hello.txt", (req, res) -> res.send "Hello World!"
