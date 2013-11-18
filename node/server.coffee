@@ -14,6 +14,12 @@ couchdb = new (cradle.Connection)().database "products"
 redisdb = redis.createClient() # This function actutally takes the id of the db as argument, 0 by default
 
 # Routes and actions
+## User actions
+app.get "products/:id", (req, res) ->
+    productId = req.params.id
+    couchdb.get productId, (err, data) ->
+        res.json JSON.stringify(data)
+
 ## Useful checks
 app.get "/hello.txt", (req, res) -> res.send "Hello World!"
 app.get "/images", (req, res) -> res.json { files: fs.readdirSync("./images") }
