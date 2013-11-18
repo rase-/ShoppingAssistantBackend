@@ -10,7 +10,7 @@ app = express()
 app.use express.bodyParser({ keepExtensions: true })
 
 # Initialize DBs
-#couchdb = (new cradle.Connection)().database "products"
+couchdb = new (cradle.Connection)().database "products"
 redisdb = redis.createClient() # This function actutally takes the id of the db as argument, 0 by default
 
 # Routes and actions
