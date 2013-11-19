@@ -45,7 +45,11 @@ app.post "/logo", (req, res) ->
 
 app.post "/process", (req, res) ->
     console.log JSON.stringify(req.files)
-    res.send req.files.file
+    barcode = imgproc.scanBarcode req.files.file.path
+    text = imgproc.scanText req.files.file.path
+    # Here filter out those IDs with close enough freak logos
+    # Here filter out with text
+    # Here filter out with SURF
 
 # Start the app
 app.listen 3000
