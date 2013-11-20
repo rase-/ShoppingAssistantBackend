@@ -23,10 +23,26 @@ couchdb.exists (err, exists) ->
 
 # Routes and actions
 ## User actions
-app.get "/products/:id", (req, res) ->
-    productId = req.params.id
-    couchdb.get productId, (err, data) ->
+app.get "/products/:name", (req, res) ->
+    productName = req.params.name
+    couchdb.get productName, (err, data) ->
         res.json data
+
+app.post "/products", (req, res) ->
+    product = req.body # check that this actually contains the product info
+    barcodeImgPath = req.files.barcode.path
+    logoImgPath = req.files.logo.path
+    product["barcode"] = imgproc.scanBarcode barcodeImgPath if barcodeImgPath
+    # Here copy the logo img to correct place and set path
+    # here make Bow representation from all images that have text in them
+
+app.post "/products/match", (req, res) ->
+    console.log JSON.stringify(req.files)
+    barcode = imgproc.scanBarcode req.files.file.path
+    text = imgproc.scanText req.files.file.path
+    # Here filter out those IDs with close enough freak logos
+    # Here filter out with text
+    # Here filter out with SURF
 
 ## Useful checks
 app.get "/hello.txt", (req, res) -> res.send "Hello World!"
@@ -42,14 +58,6 @@ app.post "/text", (req, res) ->
 
 app.post "/logo", (req, res) ->
     res.json { "score": imgproc.matchLogos(req.files.file.path, req.files.file.path) }
-
-app.post "/process", (req, res) ->
-    console.log JSON.stringify(req.files)
-    barcode = imgproc.scanBarcode req.files.file.path
-    text = imgproc.scanText req.files.file.path
-    # Here filter out those IDs with close enough freak logos
-    # Here filter out with text
-    # Here filter out with SURF
 
 # Start the app
 app.listen 3000
