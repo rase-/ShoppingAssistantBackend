@@ -34,7 +34,10 @@ app.post "/products", (req, res) ->
     logoImgPath = req.files.logo.path
     product["barcode"] = imgproc.scanBarcode barcodeImgPath if barcodeImgPath
     # Here copy the logo img to correct place and set path
-    # here make Bow representation from all images that have text in them
+    # Here make BoW representation from all images that have text in them
+
+    couchdb.save product.name, product, (err, res) -> console.log "Error saving product"
+    # Save to redis with barcode as key
 
 app.post "/products/match", (req, res) ->
     console.log JSON.stringify(req.files)
