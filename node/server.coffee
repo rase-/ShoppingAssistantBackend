@@ -84,23 +84,34 @@ app.post "/products/match", (req, res) ->
     text = imgproc.scanText req.files.file.path
     imgs = (file for file in fs.readdirSync("./images/") when file.indexOf("jpg") >= 0)
     freakResults = for img in imgs
-        console.log "Matching with ./images/#{img}"
         match = imgproc.freakMatchLogos(req.files.file.path, "./images/#{img}")
         { "img": img, "match": match }
     freakResultsFiltered = (freakResult for freakResult in freakResults when freakResult.match > Threshold.FREAK)
     # Here filter out with text:
     ## Fetch database entries with img name
     ## Filter based on to threshold
+    textResults = freakResultsFiltered
     # Here filter out with SURF
     ## only for the filtered
-    res.json { results: freakResults, filtered: freakResultsFiltered }
+    maxEntry = { "img": null, "match": -1 }
+    surfResults = for entry in textResults
+        match = imgproc.surfMatchLogos req.files.file.path, "./images/#{entry.img}"
+        entry = { "img": entry.img, "match": match }
+        maxEntry = entry if entry.match > maxEntry.match
+        entry
+    console.log JSON.stringify(surfResults)
+    couchdb.get entry.img.split(".")[0], (err, doc) ->
+        if err
+            res.json { err: err }
+        else
+            res.json doc
 
 ## Useful checks
 app.get "/hello.txt", (req, res) -> res.send "Hello World!"
 app.get "/images", (req, res) -> res.json {"imgs":  (file for file in fs.readdirSync("./images") when file.indexOf("jpg") >= 0) }
 app.get "/opencvinfo", (req, res) -> res.send imgproc.buildInformation()
 
-## Image processing
+## Image processing exposed
 app.post "/barcode", (req, res) ->
     res.json { "barcode": imgproc.scanBarcode(req.files.file.path) }
 
