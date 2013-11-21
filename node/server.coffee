@@ -1,3 +1,6 @@
+# Thresholds
+Threshold = { "FREAK": 0.5 }
+
 # External modules
 express = require "express"
 cradle = require "cradle"
@@ -37,17 +40,23 @@ app.get "/products/:name", (req, res) ->
         res.json data
 
 app.post "/products", (req, res) ->
+    # Initialize product and paths
     product = JSON.parse req.body.product
     res.send {"status": "No images uploaded"} unless req.files
     barcodeImgPath = req.files.barcode.path if req.files.barcode
     textImgPaths = (info.path for file, info of req.files when file.indexOf("text") >= 0)
     console.log JSON.stringify(textImgPaths)
     logoImgPath = req.files.logo.path if req.files.logo
+
     product["barcode"] = imgproc.scanBarcode barcodeImgPath if barcodeImgPath
+
+    # Copy logo image
     if logoImgPath
         fs.copy logoImgPath, "./images/#{product.name}.jpg", (err) ->
             return console.error(err) if err
             console.log "Copied logo" 
+
+    # Build bag of words
     product["bagOfWords"] = {}
     texts = (imgproc.scanText(file) for file in textImgPaths)
     for text in texts
@@ -58,7 +67,8 @@ app.post "/products", (req, res) ->
         for word in words
             product["bagOfWords"][word] = 0 unless product["bagOfWords"][word]
             product["bagOfWords"][word]++
-    
+   
+    # DB handling
     couchdb.save product.name, product, (err, res) -> 
         if err
             console.log "Error saving product: #{err}"
@@ -72,17 +82,22 @@ app.post "/products", (req, res) ->
 app.post "/products/match", (req, res) ->
     barcode = imgproc.scanBarcode req.files.file.path
     text = imgproc.scanText req.files.file.path
-    imgs = fs.readdirSync("./images")
-    results = for img in imgs
+    imgs = (file for file in fs.readdirSync("./images/") when file.indexOf("jpg") >= 0)
+    freakResults = for img in imgs
+        console.log "Matching with ./images/#{img}"
         match = imgproc.matchLogos(req.files.file.path, "./images/#{img}")
         { "img": img, "match": match }
-    # Here filter out those IDs with close enough freak logos
-    # Here filter out with text
+    freakResultsFiltered = (freakResult for freakResult in freakResults when freakResult.match > Threshold.FREAK)
+    res.json { filtered: freakResultsFiltered }
+    # Here filter out with text:
+    ## Fetch database entries with img name
+    ## Filter based on to threshold
     # Here filter out with SURF
+    ## only for the filtered
 
 ## Useful checks
 app.get "/hello.txt", (req, res) -> res.send "Hello World!"
-app.get "/images", (req, res) -> res.json { files: fs.readdirSync("./images") }
+app.get "/images", (req, res) -> res.json {"imgs":  (file for file in fs.readdirSync("./images") when file.indexOf("jpg") >= 0) }
 app.get "/opencvinfo", (req, res) -> res.send imgproc.buildInformation()
 
 ## Image processing
