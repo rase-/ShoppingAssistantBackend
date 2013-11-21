@@ -99,8 +99,8 @@ app.post "/products/match", (req, res) ->
         entry = { "img": entry.img, "match": match }
         maxEntry = entry if entry.match > maxEntry.match
         entry
-    console.log JSON.stringify(surfResults)
-    couchdb.get entry.img.split(".")[0], (err, doc) ->
+    
+    couchdb.get maxEntry.img.split(".")[0], (err, doc) ->
         if err
             res.json { err: err }
         else
