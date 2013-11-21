@@ -41,6 +41,7 @@ app.post "/products", (req, res) ->
 
     couchdb.save product.name, product, (err, res) -> console.log "Error saving product"
     # Save to redis with barcode as key
+    # Modify either redis or couchdb stored global term array for tf-idf
 
 app.post "/products/match", (req, res) ->
     console.log JSON.stringify(req.files)
