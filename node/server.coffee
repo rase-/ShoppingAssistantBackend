@@ -1,5 +1,7 @@
-# Thresholds
+# Thresholds and helpers
 Threshold = { "FREAK": 0.05 }
+euclideanDistance = (vec1, vec2)  ->
+    0.0 # TODO: REAL IMPL
 
 # External modules
 express = require "express"
