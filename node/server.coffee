@@ -1,5 +1,5 @@
 # Thresholds
-Threshold = { "FREAK": 0.5 }
+Threshold = { "FREAK": 0.05 }
 
 # External modules
 express = require "express"
@@ -85,15 +85,15 @@ app.post "/products/match", (req, res) ->
     imgs = (file for file in fs.readdirSync("./images/") when file.indexOf("jpg") >= 0)
     freakResults = for img in imgs
         console.log "Matching with ./images/#{img}"
-        match = imgproc.matchLogos(req.files.file.path, "./images/#{img}")
+        match = imgproc.freakMatchLogos(req.files.file.path, "./images/#{img}")
         { "img": img, "match": match }
     freakResultsFiltered = (freakResult for freakResult in freakResults when freakResult.match > Threshold.FREAK)
-    res.json { results: freakResults, filtered: freakResultsFiltered }
     # Here filter out with text:
     ## Fetch database entries with img name
     ## Filter based on to threshold
     # Here filter out with SURF
     ## only for the filtered
+    res.json { results: freakResults, filtered: freakResultsFiltered }
 
 ## Useful checks
 app.get "/hello.txt", (req, res) -> res.send "Hello World!"
@@ -108,7 +108,7 @@ app.post "/text", (req, res) ->
     res.json { "text": imgproc.scanText(req.files.file.path) }
 
 app.post "/logo", (req, res) ->
-    res.json { "score": imgproc.matchLogos(req.files.file.path, req.files.file.path) }
+    res.json { "score": imgproc.freakMatchLogos(req.files.file.path, req.files.file.path) }
 
 # Start the app
 app.listen 3000

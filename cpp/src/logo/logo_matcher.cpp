@@ -64,14 +64,15 @@ double matchLogosSurf(std::string sent_file_path, std::string reference_image_pa
     matcher.match(sent_descriptors, reference_descriptors, matches);
     
     double max_dist = 0, min_dist = 100;
-    for (int i = 0; i < sent_descriptors.rows; i++) {
+    int min_length = std::min(sent_descriptors.rows, reference_descriptors.rows);
+    for (int i = 0; i < min_length; i++) {
         double dist = matches[i].distance;
         max_dist = (dist > max_dist) ? dist : max_dist;
         min_dist = (dist < min_dist) ? dist : min_dist;
     }
 
     std::vector<DMatch> good_matches;
-    for (int i = 0; i < sent_descriptors.rows; i++) {
+    for (int i = 0; i < min_length; i++) {
         if (matches[i].distance <= 2*min_dist) {
             good_matches.push_back(matches[i]);
         }

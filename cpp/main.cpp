@@ -26,7 +26,7 @@ Handle<Value> buildInformation(const Arguments& args) {
     );
 }
 
-Handle<Value> MatchLogos(const Arguments& args) {
+Handle<Value> FreakMatchLogos(const Arguments& args) {
     if (args.Length() < 2) {
         ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
     }
@@ -39,6 +39,22 @@ Handle<Value> MatchLogos(const Arguments& args) {
     return scope.Close
     (
         Number::New(matchLogosFreak(sent_file_path, reference_file_path))
+    );
+}
+
+Handle<Value> SurfMatchLogos(const Arguments& args) {
+    if (args.Length() < 2) {
+        ThrowException(Exception::TypeError(String::New("Wrong number of arguments")));
+    }
+    HandleScope scope;
+
+    String::Utf8Value sent_file_v8(args[0]->ToString());
+    String::Utf8Value reference_file_v8(args[1]->ToString());
+    std::string sent_file_path = std::string(*sent_file_v8);
+    std::string reference_file_path = std::string(*reference_file_v8);
+    return scope.Close
+    (
+        Number::New(matchLogosSurf(sent_file_path, reference_file_path))
     );
 }
 
@@ -73,7 +89,8 @@ void RegisterModule(Handle<Object> target) {
     target->Set(String::NewSymbol("buildInformation"), FunctionTemplate::New(buildInformation)->GetFunction());
     target->Set(String::NewSymbol("scanBarcode"), FunctionTemplate::New(ScanForBarcode)->GetFunction());
     target->Set(String::NewSymbol("scanText"), FunctionTemplate::New(ScanForText)->GetFunction());
-    target->Set(String::NewSymbol("matchLogos"), FunctionTemplate::New(MatchLogos)->GetFunction());
+    target->Set(String::NewSymbol("freakMatchLogos"), FunctionTemplate::New(FreakMatchLogos)->GetFunction());
+    target->Set(String::NewSymbol("surfMatchLogos"), FunctionTemplate::New(SurfMatchLogos)->GetFunction());
 }
  
 NODE_MODULE(imgproc, RegisterModule);
