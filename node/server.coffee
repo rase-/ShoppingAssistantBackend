@@ -88,7 +88,7 @@ app.post "/products/match", (req, res) ->
         match = imgproc.matchLogos(req.files.file.path, "./images/#{img}")
         { "img": img, "match": match }
     freakResultsFiltered = (freakResult for freakResult in freakResults when freakResult.match > Threshold.FREAK)
-    res.json { filtered: freakResultsFiltered }
+    res.json { results: freakResults, filtered: freakResultsFiltered }
     # Here filter out with text:
     ## Fetch database entries with img name
     ## Filter based on to threshold

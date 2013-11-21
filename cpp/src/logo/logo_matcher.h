@@ -7,6 +7,7 @@
 #include <opencv2/nonfree/nonfree.hpp>
 #include <opencv2/nonfree/features2d.hpp>
 #include <string>
+#include <iostream>
 
 double matchLogosFreak(std::string sent_file_path, std::string reference_image_path);
 double matchLogosSurf(std::string sent_file_path, std::string reference_image_path);
