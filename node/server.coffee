@@ -31,10 +31,13 @@ app.get "/products/:name", (req, res) ->
 app.post "/products", (req, res) ->
     product = req.body # check that this actually contains the product info
     barcodeImgPath = req.files.barcode.path
+    textImgPath = [] # Here actually select those that have text in their name
     logoImgPath = req.files.logo.path
     product["barcode"] = imgproc.scanBarcode barcodeImgPath if barcodeImgPath
-    # Here copy the logo img to correct place and set path
-    # Here make BoW representation from all images that have text in them
+    # Here copy the logo img to correct place and set path, make then name
+    # product name, also check that it doesn't exist
+    product["bagOfWords"] = []
+    # Loop through all images and scan text, add to BoW
 
     couchdb.save product.name, product, (err, res) -> console.log "Error saving product"
     # Save to redis with barcode as key
