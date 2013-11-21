@@ -2,7 +2,7 @@
 express = require "express"
 cradle = require "cradle"
 redis = require "redis"
-fs = require "fs"
+fs = require "fs-extra"
 imgproc = require "../cpp/build/Release/imgproc"
 
 # Initialize app
@@ -19,7 +19,15 @@ couchdb.exists (err, exists) ->
         console.log "CouchDB database found"
     else
         console.log "CouchDB database not found, creating..."
-        db.create()
+        couchdb.create()
+        db.save "_design/products", {all: { map: (doc) -> emit doc.name, doc if doc.name }}
+        console.log "...Created!"
+
+# Useful piece of code, do not destroy yet
+# couchdb.view "products/all", (err, result) ->
+#         result.forEach (key, row, id) ->
+#             keys.push key
+# 
 
 # Routes and actions
 ## User actions
@@ -29,24 +37,45 @@ app.get "/products/:name", (req, res) ->
         res.json data
 
 app.post "/products", (req, res) ->
-    product = req.body # check that this actually contains the product info
-    barcodeImgPath = req.files.barcode.path
-    textImgPath = [] # Here actually select those that have text in their name
-    logoImgPath = req.files.logo.path
+    product = JSON.parse req.body.product
+    res.send {"status": "No images uploaded"} unless req.files
+    barcodeImgPath = req.files.barcode.path if req.files.barcode
+    textImgPaths = (info.path for file, info of req.files when file.indexOf("text") >= 0)
+    console.log JSON.stringify(textImgPaths)
+    logoImgPath = req.files.logo.path if req.files.logo
     product["barcode"] = imgproc.scanBarcode barcodeImgPath if barcodeImgPath
-    # Here copy the logo img to correct place and set path, make then name
-    # product name, also check that it doesn't exist
-    product["bagOfWords"] = []
-    # Loop through all images and scan text, add to BoW
+    if logoImgPath
+        fs.copy logoImgPath, "./images/#{product.name}.jpg", (err) ->
+            return console.error(err) if err
+            console.log "Copied logo" 
+    product["bagOfWords"] = {}
+    texts = (imgproc.scanText(file) for file in textImgPaths)
+    for text in texts
+        tokens = text.split(" ")
+        words = for token in tokens
+            token.replace /\W/g, ''
+        words = (word for word in words when word.length > 0)
+        for word in words
+            product["bagOfWords"][word] = 0 unless product["bagOfWords"][word]
+            product["bagOfWords"][word]++
+    
+    couchdb.save product.name, product, (err, res) -> 
+        if err
+            console.log "Error saving product: #{err}"
+        else
+            console.log "Saved product"
 
-    couchdb.save product.name, product, (err, res) -> console.log "Error saving product"
-    # Save to redis with barcode as key
-    # Modify either redis or couchdb stored global term array for tf-idf
+    res.json product
+    # TODO: Save to redis with barcode as key
+    # TODO: Modify either redis or couchdb stored global term array for tf-idf
 
 app.post "/products/match", (req, res) ->
-    console.log JSON.stringify(req.files)
     barcode = imgproc.scanBarcode req.files.file.path
     text = imgproc.scanText req.files.file.path
+    imgs = fs.readdirSync("./images")
+    results = for img in imgs
+        match = imgproc.matchLogos(req.files.file.path, "./images/#{img}")
+        { "img": img, "match": match }
     # Here filter out those IDs with close enough freak logos
     # Here filter out with text
     # Here filter out with SURF
