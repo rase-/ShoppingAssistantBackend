@@ -25,7 +25,7 @@ couchdb.exists (err, exists) ->
     else
         console.log "CouchDB database not found, creating..."
         couchdb.create()
-        db.save "_design/products", {all: { map: (doc) -> emit doc.name, doc if doc.name }}
+        couchdb.save "_design/products", {all: { map: (doc) -> emit doc.name, doc if doc.name }}
         console.log "...Created!"
 
 # Useful piece of code, do not destroy yet
@@ -77,7 +77,7 @@ app.post "/products", (req, res) ->
         else
             console.log "Saved product"
 
-    res.json product
+    res.json { "status": "success" }
     # TODO: Save to redis with barcode as key
     # TODO: Modify either redis or couchdb stored global term array for tf-idf
 
