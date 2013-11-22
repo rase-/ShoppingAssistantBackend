@@ -120,7 +120,7 @@ app.post "/text", (req, res) ->
     res.json { "text": imgproc.scanText(req.files.file.path) }
 
 app.post "/logo", (req, res) ->
-    res.json { "score": imgproc.freakMatchLogos(req.files.file.path, req.files.file.path) }
+    res.json { "freakScore": imgproc.freakMatchLogos(req.files.file.path, req.files.file.path), "surfScore": surfMatchLogos(req.fiules.path, req.files.path) }
 
 # Start the app
 app.listen 3000
