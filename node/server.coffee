@@ -83,6 +83,7 @@ app.post "/products", (req, res) ->
 
 app.post "/products/match", (req, res) ->
     barcode = imgproc.scanBarcode req.files.file.path
+    # MAN I BROKE THE ORIGINAL BARCODE RECOGNITION
     # TODO: Don't forget to add barcode recognition here with Redis
     text = imgproc.scanText req.files.file.path
     imgs = (file for file in fs.readdirSync("./images/") when file.indexOf("jpg") >= 0)
