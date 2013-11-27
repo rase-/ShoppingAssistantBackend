@@ -84,14 +84,15 @@ app.post "/products", (req, res) ->
 app.post "/products/match", (req, res) ->
     barcode = imgproc.scanBarcode req.files.file.path
     # MAN I BROKE THE ORIGINAL BARCODE RECOGNITION
-    # TODO: Don't forget to add barcode recognition here with Redis
+    # TODO: Don't forget to add barcode recognition here with Redis (new
+    # version)
     text = imgproc.scanText req.files.file.path
     imgs = (file for file in fs.readdirSync("./images/") when file.indexOf("jpg") >= 0)
     freakResults = for img in imgs
         match = imgproc.freakMatchLogos(req.files.file.path, "./images/#{img}")
         { "img": img, "match": match }
     freakResultsFiltered = (freakResult for freakResult in freakResults when freakResult.match > Threshold.FREAK)
-    # TODO: Here filter out with text:
+    # TODO: Here filter out with text, though it doesn't work very well
     ## Fetch database entries with img name
     ## Filter based on to threshold
     textResults = freakResultsFiltered
