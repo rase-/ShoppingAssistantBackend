@@ -86,6 +86,7 @@ app.post "/products/match", (req, res) ->
     barcode = imgproc.scanBarcode req.files.file.path
     redisdb.get barcode, (err, reply) ->
         couchdb.get reply, (err, doc) -> if err then res.json { err: err } else res.json doc if reply
+        return
     text = imgproc.scanText req.files.file.path
     imgs = (file for file in fs.readdirSync("./images/") when file.indexOf("jpg") >= 0)
     freakResults = for img in imgs
