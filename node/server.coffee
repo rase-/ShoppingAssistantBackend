@@ -78,21 +78,21 @@ app.post "/products", (req, res) ->
             console.log "Saved product"
 
     res.json { "status": "success" }
-    # TODO: Save to redis with barcode as key
+    # Save to redis with barcode as key
+    redisdb.set product.barcode, product.name, redis.print if product.barcode
     # TODO: Modify either redis or couchdb stored global term array for tf-idf
 
 app.post "/products/match", (req, res) ->
     barcode = imgproc.scanBarcode req.files.file.path
-    # MAN I BROKE THE ORIGINAL BARCODE RECOGNITION
-    # TODO: Don't forget to add barcode recognition here with Redis (new
-    # version)
+    redisdb.get barcode, (err, reply) ->
+        couchdb.get reply, (err, doc) -> if err then res.json { err: err } else res.json doc if reply
     text = imgproc.scanText req.files.file.path
     imgs = (file for file in fs.readdirSync("./images/") when file.indexOf("jpg") >= 0)
     freakResults = for img in imgs
         match = imgproc.freakMatchLogos(req.files.file.path, "./images/#{img}")
         { "img": img, "match": match }
     freakResultsFiltered = (freakResult for freakResult in freakResults when freakResult.match > Threshold.FREAK)
-    # TODO: Here filter out with text, though it doesn't work very well
+    # Here we could filter out with text, though it doesn't work very well
     ## Fetch database entries with img name
     ## Filter based on to threshold
     textResults = freakResultsFiltered
